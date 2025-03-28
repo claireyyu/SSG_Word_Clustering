@@ -24,6 +24,7 @@ def main(config_path):
     summary_path = os.path.join(output_dir, "summary.json")
 
     # Step 1: Preprocessing
+    print("Step 1: Preprocessing input file...")
     df = run_preprocessing(input_file)
 
     # Optional: save preprocessed temp file
@@ -31,12 +32,14 @@ def main(config_path):
     df.to_csv(os.path.join(temp_dir, "preprocessed.csv"), index=False)
 
     # Step 2: Feature Engineering
+    print("Step 2: Extracting features (word frequency, spelling)...")
     df = run_feature_engineering(df)
 
     # Optional: save feature-enhanced temp file
     df.to_csv(os.path.join(temp_dir, "features.csv"), index=False)
 
     # Step 3: Clustering and Export
+    print("Step 3: Running clustering and exporting results...")
     df_cleaned, score = run_clustering_pipeline(
         df,
         output_dir=os.path.join(output_dir, "clusters_by_label"),
@@ -44,7 +47,9 @@ def main(config_path):
     )
 
     # Final export
+    print("Step 4: Saving final output...")
     df_cleaned.to_csv(os.path.join(output_dir, "final_cleaned_clusters.csv"), index=False)
+    
     print("Pipeline completed successfully.")
 
 if __name__ == "__main__":
