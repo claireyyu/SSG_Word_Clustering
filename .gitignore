@@ -1,7 +1,7 @@
 .venv/
 __pycache__/
 *.pyc
-data/
+data/accepted_words.csv
 output/
 .DS_Store
 
