@@ -3,4 +3,5 @@ __pycache__/
 *.pyc
 data/
 output/
+.DS_Store
 
