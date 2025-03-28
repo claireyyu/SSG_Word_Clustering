@@ -1,7 +1,11 @@
 .venv/
 __pycache__/
 *.pyc
-data/accepted_words.csv
+
+# Ignore user-provided data except placeholder
+data/*
+!data/accepted_words.csv
+
 output/
 .DS_Store
 
