@@ -4,7 +4,7 @@ __pycache__/
 
 # Ignore user-provided data except placeholder
 data/*
-!data/accepted_words.csv
+!data/README.md
 
 output/
 .DS_Store
