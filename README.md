@@ -66,6 +66,11 @@ Run the following command to execute the full clustering pipeline:
 python main.py --config config.yaml
 ```
 
+On Mac, run:
+```bash
+python3 main.py --config config.yaml
+```
+
 ---
 
 ## 5. Output
