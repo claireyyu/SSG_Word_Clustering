@@ -116,7 +116,7 @@ Together, these features enable a multidimensional clustering model that account
 
 ### 4.3 Content Filtering
 - Removes inappropriate content using two methods:
-  1. `better_profanity` library:
+  1. [`better_profanity` library:](https://github.com/snguyenthanh/better_profanity/tree/master)
      - Built-in profanity detection
      - Custom word list support
   2. Custom word list from CSV:
