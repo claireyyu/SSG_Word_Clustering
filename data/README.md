@@ -1,10 +1,12 @@
 # Data Folder
 
-This folder is used to store the input CSV file for the clustering pipeline.
+This folder is used to store the input CSV files for the clustering pipeline.
 
-Expected input file: `accepted_words.csv`
+## Input Files
 
-### Format:
+### 1. Main Input File: `accepted_words.csv`
+
+#### Format:
 The file must have two columns with a header:
 
 ```
@@ -13,4 +15,17 @@ apple,10
 banana,5
 ```
 
-Note: Due to `.gitignore` settings, input files like `accepted_words.csv` are not tracked by Git. You will need to place your own input file here before running the pipeline.
+### 2. Custom Word List: `custom_list.csv` (Optional)
+
+#### Format:
+The file must have at least one column with a header:
+
+```
+word,reason
+goat,testing
+```
+
+- `word`: The word to filter out (required)
+- `reason`: Optional reason for filtering (optional)
+
+Note: Due to `.gitignore` settings, input files like `accepted_words.csv` and `custom_list.csv` are not tracked by Git. You will need to place your own input files here before running the pipeline.
