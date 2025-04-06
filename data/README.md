@@ -15,7 +15,7 @@ apple,10
 banana,5
 ```
 
-### 2. Custom Word List: `custom_list.csv` (Optional)
+### 2. Custom Word List: `custom_filter_words.csv` (Optional)
 
 #### Format:
 The file must have at least one column with a header:
@@ -28,4 +28,4 @@ goat,testing
 - `word`: The word to filter out (required)
 - `reason`: Optional reason for filtering (optional)
 
-Note: Due to `.gitignore` settings, input files like `accepted_words.csv` and `custom_list.csv` are not tracked by Git. You will need to place your own input files here before running the pipeline.
+Note: Due to `.gitignore` settings, input files like `accepted_words.csv` and `custom_filter_words.csv` are not tracked by Git. You will need to place your own input files here before running the pipeline.
