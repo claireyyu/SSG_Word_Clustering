@@ -91,7 +91,3 @@ The pipeline supports two methods for content filtering:
    - Enable in config: `content_filtering.custom_list.enabled: true`
    - Specify CSV path: `content_filtering.custom_list.path: data/custom_filter_words.csv`
    - CSV format: `word,reason` (reason is optional)
-
-## License
-
-MIT License
