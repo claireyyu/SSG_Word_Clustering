@@ -63,6 +63,11 @@ content_filtering:
 python main.py --config config.yaml
 ```
 
+4. (Optional) Deactivate virtual environment
+```bash
+deactivate
+```
+
 ## Output
 
 The pipeline generates the following outputs:
