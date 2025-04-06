@@ -106,12 +106,44 @@ Together, these features enable a multidimensional clustering model that account
 - `output/final_cleaned_clusters.csv`: full clustered words
 - `output/clusters_by_label/cluster0_words.csv` etc.: per-cluster exports
 - `output/summary.json`: metadata on clustering results
+- `output/removed_words.csv`: words removed due to inappropriate content
 
 ### 4.2 Cleaning Non-English Words
 - Filters out:
   - Words not in NLTK's English corpus
   - Words with invalid formatting or length
 - Uses `filter_english_only()`
+
+### 4.3 Content Filtering
+- Removes inappropriate content using two methods:
+  1. `better_profanity` library:
+     - Built-in profanity detection
+     - Custom word list support
+  2. Custom word list from CSV:
+     - Flexible format with optional reason column
+     - Case-insensitive matching
+- Provides detailed statistics about removed words:
+  - Total number of words removed
+  - Per-cluster impact (words removed from each cluster)
+  - Exports removed words with their original cluster labels
+- Customizable through `config.yaml`:
+  ```yaml
+  content_filtering:
+    # Option 1: Use profanity library
+    profanity:
+      enabled: false
+      custom_words: []  # Add custom words to filter here
+    # Option 2: Use custom word list
+    custom_list:
+      enabled: true
+      path: data/custom_filter_words.csv  # Path to CSV file with custom word list
+  ```
+- Custom word list CSV format:
+  ```csv
+  word,reason
+  word1,reason1
+  word2,reason2
+  ```
 
 ## 5. Customization Options
 
@@ -123,8 +155,11 @@ Together, these features enable a multidimensional clustering model that account
 | Spelling features          | `feature_engineering.py`         | Add/remove feature functions       |
 | Weight search range        | `clustering_core.py`             | Edit `np.arange()` in grid search  |
 | Clustering algorithm       | `clustering_core.py`             | Replace or extend from KMeans      |
+| Content filtering method   | `config.yaml`                    | Choose between profanity/custom list |
+| Content filtering words    | `config.yaml` or CSV file        | Add words to filter                |
+| Content filtering logic    | `utils.py:filter_inappropriate_content()` | Modify filtering rules |
 
 ## Summary
 
-The final pipeline performs multi-dimensional word difficulty clustering using a blend of corpus-based, usage-based, and structure-based features. All major steps are modular, customizable, and easily extensible.
+The final pipeline performs multi-dimensional word difficulty clustering using a blend of corpus-based, usage-based, and structure-based features. All major steps are modular, customizable, and easily extensible. The pipeline includes comprehensive content filtering to ensure appropriate vocabulary for educational contexts.
 

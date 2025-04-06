@@ -1,3 +1,12 @@
 input_file: data/accepted_words.csv
 output_dir: output/
 temp_dir: output/temp/
+content_filtering:
+  # Option 1: Use profanity library
+  profanity:
+    enabled: false
+    custom_words: []
+  # Option 2: Use custom word list
+  custom_list:
+    enabled: true
+    path: data/custom_filter_words.csv  # Path to CSV file with custom word list

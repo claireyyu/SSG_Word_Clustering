@@ -1,99 +1,97 @@
+# Word Difficulty Clustering Pipeline
 
-# Word Difficulty Clustering
+A Python pipeline for clustering words based on their difficulty levels using K-means clustering. The pipeline processes word data, extracts features, and clusters words into three difficulty levels.
 
-This repository provides a word difficulty clustering pipeline using real-world frequency and spelling complexity features. The process is automated and configurable through a YAML file.
+## Features
 
-## Directory Structure
+- Preprocessing of word data
+- Feature engineering (frequency, spelling complexity)
+- K-means clustering with grid search for optimal weights
+- Content filtering to remove inappropriate words
+- Export of results by cluster and summary statistics
 
-```
-SSG_Word_Clustering/
-├── clustering/                  # Core modules (preprocessing, feature engineering, clustering)
-├── data/                        # Input data folder
-│   └── accepted_words.csv       # Placeholder for your input word list
-├── output/                      # Output folder for results
-├── main.py                      # Entry point
-├── config.yaml                  # Configuration file
-├── requirements.txt             # Python dependencies
-└── README.md                    # Project instructions
-```
+## Requirements
 
----
+- Python 3.8+
+- pandas
+- numpy
+- scikit-learn
+- better_profanity (for content filtering)
 
-## 1. Clone the Repository
+## Installation
 
+1. Clone the repository:
 ```bash
 git clone https://github.com/claireyyu/SSG_Word_Clustering.git
-cd SSG_Word_Clustering
+cd word-clustering
 ```
 
----
-
-## 2. Set Up Virtual Environment
-
-It is recommended to use a virtual environment to manage dependencies:
-
+2. Install dependencies:
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
+## Usage
 
-## 3. Prepare Your Input File
+1. Prepare your input CSV file with the following columns:
+   - Word
+   - Frequency
+   - Real_World_Frequency
+   - Spelling_Easiness
 
-Place your word list in the `data/` directory as `accepted_words.csv`.
-
-### Expected Format:
-
-```csv
-Word,Original_Frequency
-apple,12.4
-banana,5.2
-...
+2. Configure the pipeline in `config.yaml`:
+```yaml
+input_file: data/your_input.csv
+output_dir: output/
+temp_dir: output/temp/
+content_filtering:
+  # Option 1: Use profanity library
+  profanity:
+    enabled: false
+    custom_words: []  # Add custom words to filter here
+  # Option 2: Use custom word list
+  custom_list:
+    enabled: true
+    path: data/custom_filter_words.csv  # Path to CSV file with custom word list
 ```
 
-The file must contain these two columns. The header row is required.
-
----
-
-## 4. Run the Pipeline
-
-Run the following command to execute the full clustering pipeline:
-
+3. Run the pipeline:
 ```bash
 python main.py --config config.yaml
 ```
 
-On Mac, run:
-```bash
-python3 main.py --config config.yaml
-```
+## Output
 
----
+The pipeline generates the following outputs:
 
-## 5. Output
+1. `output/clusters_by_label/`: Directory containing CSV files for each cluster
+   - `cluster0_words.csv`: Easy words
+   - `cluster1_words.csv`: Medium difficulty words
+   - `cluster2_words.csv`: Hard words
 
-After execution, results will be saved in the `output/` directory:
+2. `output/removed_words.csv`: List of words removed during content filtering
 
-- `clusters_by_label/cluster0_words.csv` – clustered word lists by difficulty
-- `final_cleaned_clusters.csv` – full list of cleaned clustered words
-- `summary.json` – basic statistics and settings used
+3. `output/summary.json`: Summary of clustering results including:
+   - Number of clusters
+   - Words per cluster
+   - Best weights found
+   - Silhouette score
 
----
+4. `output/final_cleaned_clusters.csv`: Complete filtered dataset with cluster labels
 
-## 6. Cleaning Up
+## Content Filtering
 
-To deactivate the virtual environment:
+The pipeline supports two methods for content filtering:
 
-```bash
-deactivate
-```
+1. Using the `better_profanity` library:
+   - Enable in config: `content_filtering.profanity.enabled: true`
+   - Add custom words: `content_filtering.profanity.custom_words: ["word1", "word2"]`
 
----
+2. Using a custom word list:
+   - Enable in config: `content_filtering.custom_list.enabled: true`
+   - Specify CSV path: `content_filtering.custom_list.path: data/custom_filter_words.csv`
+   - CSV format: `word,reason` (reason is optional)
 
-## Notes
+## License
 
-- The pipeline automatically downloads required NLTK corpora the first time you run it.
-- Non-English or malformed words will be removed during final filtering.
+MIT License

@@ -22,11 +22,13 @@ def run_kmeans_grid_search(df, min_score=0.5):
         if w_real <= w_sub or w_real <= w_spell:
             continue  # Enforce real-world frequency has the highest weight
 
-        df["W_Sub"] = df["Standardized_Frequency"] * w_sub
-        df["W_Real"] = df["Standardized_RealWorld_Log"] * w_real
-        df["W_Spell"] = df["Standardized_Spelling_Easiness"] * w_spell
+        # Create a new DataFrame copy for this iteration
+        df_iter = df.copy()
+        df_iter.loc[:, "W_Sub"] = df_iter["Standardized_Frequency"] * w_sub
+        df_iter.loc[:, "W_Real"] = df_iter["Standardized_RealWorld_Log"] * w_real
+        df_iter.loc[:, "W_Spell"] = df_iter["Standardized_Spelling_Easiness"] * w_spell
 
-        X = df[["W_Sub", "W_Real", "W_Spell"]]
+        X = df_iter[["W_Sub", "W_Real", "W_Spell"]]
         kmeans = KMeans(n_clusters=3, random_state=42)
         labels = kmeans.fit_predict(X)
         score = silhouette_score(X, labels)
@@ -42,9 +44,9 @@ def run_final_kmeans(df, weights):
     Run final KMeans clustering using the given weights and add cluster labels.
     """
     w_sub, w_real, w_spell = weights
-    df["W_Sub"] = df["Standardized_Frequency"] * w_sub
-    df["W_Real"] = df["Standardized_RealWorld_Log"] * w_real
-    df["W_Spell"] = df["Standardized_Spelling_Easiness"] * w_spell
+    df.loc[:, "W_Sub"] = df["Standardized_Frequency"] * w_sub
+    df.loc[:, "W_Real"] = df["Standardized_RealWorld_Log"] * w_real
+    df.loc[:, "W_Spell"] = df["Standardized_Spelling_Easiness"] * w_spell
 
     X = df[["W_Sub", "W_Real", "W_Spell"]]
     kmeans = KMeans(n_clusters=3, random_state=42)
@@ -82,22 +84,59 @@ def summarize_and_export(df, output_dir, summary_path):
 
     return df_clean
 
-def run_clustering_pipeline(df, output_dir, summary_path):
+def save_clustering_summary(df, weights, score, summary_path):
     """
-    Full clustering pipeline: grid search, clustering, export.
-    Returns cleaned DataFrame and silhouette score.
+    Save clustering summary to JSON file.
+    
+    Parameters:
+    df (pd.DataFrame): DataFrame with cluster labels
+    weights (tuple): Best weights found (w_sub, w_real, w_spell)
+    score (float): Best silhouette score
+    summary_path (str): Path to save summary JSON
     """
-    weights, score = run_kmeans_grid_search(df)
+    w_sub, w_real, w_spell = weights
+    summary = {
+        "num_clusters": 3,
+        "cluster_counts": df["KMeans_Label_Ranked"].value_counts().to_dict(),
+        "weights": {
+            "submission": float(w_sub),
+            "real_world": float(w_real),
+            "spelling": float(w_spell)
+        },
+        "silhouette_score": float(score)
+    }
 
-    if None in weights:
-        raise RuntimeError("No valid weight combination found with required silhouette score.")
+    with open(summary_path, 'w') as f:
+        json.dump(summary, f, indent=2)
 
-    df_clustered = run_final_kmeans(df, weights)
-    df_cleaned = summarize_and_export(df_clustered, output_dir, summary_path)
+def run_clustering_pipeline(df, output_dir=None, summary_path=None):
+    """
+    Run the complete clustering pipeline:
+    1. Grid search for optimal weights
+    2. Apply K-means clustering
+    3. Export results if output_dir is provided
+    
+    Parameters:
+    df (pd.DataFrame): Input DataFrame with features
+    output_dir (str, optional): Directory to save results
+    summary_path (str, optional): Path to save clustering summary
+    
+    Returns:
+    pd.DataFrame: DataFrame with cluster labels
+    float: Best silhouette score
+    """
+    # Grid search for optimal weights
+    best_weights, best_score = run_kmeans_grid_search(df)
+    w_sub, w_real, w_spell = best_weights
+    print(f"Best weights: Submission={w_sub:.1f}, RealWorld={w_real:.1f}, Spelling={w_spell:.1f}")
+    print(f"Silhouette Score: {best_score:.4f}")
 
-    print(f"Best weights: Submission={weights[0]}, RealWorld={weights[1]}, Spelling={weights[2]}")
-    print(f"Silhouette Score: {score:.4f}")
-    print(f"Cleaned clustered words saved to: {output_dir}")
-
-    return df_cleaned, score
+    # Apply final clustering with best weights
+    df_clustered = run_final_kmeans(df, best_weights)
+    
+    # Save summary if path provided
+    if summary_path:
+        save_clustering_summary(df_clustered, best_weights, best_score, summary_path)
+    
+    return df_clustered, best_score
 
