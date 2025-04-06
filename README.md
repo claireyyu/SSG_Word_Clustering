@@ -23,7 +23,7 @@ A Python pipeline for clustering words based on their difficulty levels using K-
 1. Clone the repository:
 ```bash
 git clone https://github.com/claireyyu/SSG_Word_Clustering.git
-cd word-clustering
+cd SSG_Word_Clustering
 ```
 
 2. Install dependencies:
