@@ -131,7 +131,7 @@ Together, these features enable a multidimensional clustering model that account
   content_filtering:
     # Option 1: Use profanity library
     profanity:
-      enabled: false
+      enabled: true
       custom_words: []  # Add custom words to filter here
     # Option 2: Use custom word list
     custom_list:

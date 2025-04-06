@@ -4,7 +4,7 @@ temp_dir: output/temp/
 content_filtering:
   # Option 1: Use profanity library
   profanity:
-    enabled: false
+    enabled: true
     custom_words: []
   # Option 2: Use custom word list
   custom_list:

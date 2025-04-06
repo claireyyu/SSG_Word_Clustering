@@ -28,6 +28,9 @@ cd SSG_Word_Clustering
 
 2. Install dependencies:
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
@@ -47,7 +50,7 @@ temp_dir: output/temp/
 content_filtering:
   # Option 1: Use profanity library
   profanity:
-    enabled: false
+    enabled: true
     custom_words: []  # Add custom words to filter here
   # Option 2: Use custom word list
   custom_list:
