@@ -2,6 +2,7 @@ import re
 from nltk.corpus import words
 from nltk import download
 import pandas as pd
+from better_profanity import profanity
 
 # Download English word list on first run
 download('words')
@@ -57,4 +58,62 @@ def export_word_list(df, label_column, word_column, output_dir):
         words = df[df[label_column] == label][word_column]
         out_path = os.path.join(output_dir, f"cluster{label}_words.csv")
         words.to_csv(out_path, index=False, header=False)
+
+def get_cluster_sizes(df, label_column="KMeans_Label_Ranked"):
+    """
+    Get the size of each cluster in the DataFrame.
+    Returns a dictionary mapping cluster labels to their sizes.
+    """
+    return df[label_column].value_counts().to_dict()
+
+def get_removed_words(original_df, filtered_df, label_column="KMeans_Label_Ranked"):
+    """
+    Get words that were removed during filtering, along with their cluster
+    information. Returns a DataFrame containing removed words and their
+    original clusters.
+    """
+    # Find removed words by comparing the two DataFrames
+    removed_mask = ~original_df["Word"].isin(filtered_df["Word"])
+    removed_words = original_df[removed_mask].copy()
+    
+    # Select and rename relevant columns
+    removed_words = removed_words[["Word", label_column]]
+    removed_words.columns = ["Word", "Original_Cluster"]
+    
+    return removed_words
+
+def filter_inappropriate_content(df, custom_words=None):
+    """
+    Filter a DataFrame to remove rows containing inappropriate words
+    using the better_profanity library.
+    
+    Parameters:
+    df (pd.DataFrame): Input DataFrame to filter
+    custom_words (list, optional): Additional custom words to add to the filter
+    
+    Returns:
+    pd.DataFrame: Filtered DataFrame
+    int: Number of rows removed
+    """
+    # Initialize the profanity filter
+    if custom_words:
+        profanity.add_censor_words(custom_words)
+    
+    # Function to check if any cell in a row contains profanity
+    def contains_profanity(row):
+        for value in row:
+            if isinstance(value, str) and profanity.contains_profanity(value):
+                return True
+        return False
+    
+    # Store original length
+    original_len = len(df)
+    
+    # Filter out rows with inappropriate content
+    filtered_df = df[~df.apply(contains_profanity, axis=1)]
+    
+    # Calculate number of rows removed
+    rows_removed = original_len - len(filtered_df)
+    
+    return filtered_df, rows_removed
 

@@ -3,3 +3,4 @@ scikit-learn>=1.0.0
 nltk>=3.6.0
 wordfreq>=2.5.0
 pyyaml>=6.0
+better-profanity>=0.7.0
