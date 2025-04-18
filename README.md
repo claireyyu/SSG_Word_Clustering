@@ -63,11 +63,6 @@ content_filtering:
 python main.py --config config.yaml
 ```
 
-4. (Optional) Deactivate virtual environment
-```bash
-deactivate
-```
-
 ## Output
 
 The pipeline generates the following outputs:
@@ -99,3 +94,20 @@ The pipeline supports two methods for content filtering:
    - Enable in config: `content_filtering.custom_list.enabled: true`
    - Specify CSV path: `content_filtering.custom_list.path: data/custom_filter_words.csv`
    - CSV format: `word,reason` (reason is optional)
+
+## Detailed Documentation
+
+For a comprehensive explanation of the pipeline's workflow, including:
+- Detailed feature engineering process
+- Clustering algorithm implementation
+- Content filtering mechanisms
+- Customization options
+- Input/output specifications
+
+Please refer to [WORKFLOW.md](WORKFLOW.md) for the complete technical documentation.
+
+## Contributors
+
+- Claire (Yue) Yu
+- Min Ren
+- Peihao Li
